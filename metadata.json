@@ -1,0 +1,6 @@
+{
+  "name": "كيان الإجادة - لوحة القضايا المركزية",
+  "description": "منصة كيان الإجادة للمحاماة والاستشارات القانونية لإدارة ومتابعة القضايا مع حماية بكلمات مرور وسجل رقابي كامل للمدير ونسخ احتياطي تلقائي.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
