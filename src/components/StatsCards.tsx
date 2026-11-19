@@ -4,13 +4,17 @@ import { CaseItem } from '../types';
 
 interface StatsCardsProps {
   cases: CaseItem[];
+  legalWorksCount?: number;
   onFilterChange: (status: string) => void;
+  onOpenLegalWorks?: () => void;
   activeFilter: string;
 }
 
 export const StatsCards: React.FC<StatsCardsProps> = ({
   cases,
+  legalWorksCount = 0,
   onFilterChange,
+  onOpenLegalWorks,
   activeFilter,
 }) => {
   const total = cases.length;
@@ -18,15 +22,14 @@ export const StatsCards: React.FC<StatsCardsProps> = ({
   const pendingReview = cases.filter((c) => c.status === 'قيد النظر').length;
   const inProgress = cases.filter((c) => c.status === 'قيد التنفيذ').length;
   const finished = cases.filter((c) => c.status === 'منتهية').length;
-  const archived = cases.filter((c) => c.status === 'مؤرشفة').length;
 
   const cards = [
     {
       title: 'إجمالي ملفات القضايا',
       count: total,
       icon: Briefcase,
-      color: 'bg-emerald-50 border-emerald-200 text-emerald-800',
-      iconBox: 'bg-emerald-100 text-emerald-700 border-emerald-200',
+      accentText: 'text-[#314B6E] dark:text-[#BDB3A3]',
+      iconBox: 'bg-[#EEF2F6] dark:bg-[#314B6E]/40 text-[#314B6E] dark:text-[#BDB3A3] border-slate-200 dark:border-[#314B6E]',
       filterValue: 'all',
       badge: 'السجل العام',
     },
@@ -34,8 +37,8 @@ export const StatsCards: React.FC<StatsCardsProps> = ({
       title: 'قضايا قيد النظر',
       count: pendingReview,
       icon: Clock,
-      color: 'bg-blue-50 border-blue-200 text-blue-700',
-      iconBox: 'bg-blue-100 text-blue-700 border-blue-200',
+      accentText: 'text-[#4F6D91] dark:text-sky-300',
+      iconBox: 'bg-sky-50 dark:bg-sky-950/50 text-[#314B6E] dark:text-sky-300 border-sky-200/70 dark:border-sky-500/30',
       filterValue: 'قيد النظر',
       badge: 'جلسات ومرافعات',
     },
@@ -43,8 +46,8 @@ export const StatsCards: React.FC<StatsCardsProps> = ({
       title: 'قضايا قيد التنفيذ',
       count: inProgress,
       icon: Scale,
-      color: 'bg-purple-50 border-purple-200 text-purple-700',
-      iconBox: 'bg-purple-100 text-purple-700 border-purple-200',
+      accentText: 'text-amber-700 dark:text-amber-300',
+      iconBox: 'bg-amber-50 dark:bg-amber-950/50 text-amber-700 dark:text-amber-300 border-amber-200/70 dark:border-amber-500/30',
       filterValue: 'قيد التنفيذ',
       badge: 'تنفيذ الأحكام',
     },
@@ -52,18 +55,18 @@ export const StatsCards: React.FC<StatsCardsProps> = ({
       title: 'قضايا منتهية',
       count: finished,
       icon: CheckCircle2,
-      color: 'bg-emerald-100 border-emerald-300 text-emerald-900',
-      iconBox: 'bg-emerald-200 text-emerald-900 border-emerald-300',
+      accentText: 'text-emerald-700 dark:text-emerald-300',
+      iconBox: 'bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-300 border-emerald-200/70 dark:border-emerald-500/30',
       filterValue: 'منتهية',
       badge: 'أحكام قطعية',
     },
     {
-      title: 'قضايا مؤرشفة',
-      count: archived,
+      title: 'أعمال قانونية',
+      count: legalWorksCount,
       icon: Calendar,
-      color: 'bg-slate-100 border-slate-300 text-slate-800',
-      iconBox: 'bg-slate-200 text-slate-800 border-slate-300',
-      filterValue: 'مؤرشفة',
+      accentText: 'text-[#7A6B54] dark:text-[#BDB3A3]',
+      iconBox: 'bg-[#F6F2EB] dark:bg-[#1C2838] text-[#7A6B54] dark:text-[#BDB3A3] border-[#BDB3A3]/60 dark:border-[#BDB3A3]/40',
+      filterValue: 'works',
       badge: 'الأعمال القانونية و التشغيلية',
     },
   ];
@@ -77,15 +80,21 @@ export const StatsCards: React.FC<StatsCardsProps> = ({
         return (
           <button
             key={card.title}
-            onClick={() => onFilterChange(card.filterValue)}
-            className={`p-4 rounded-2xl border text-right transition-all flex flex-col justify-between relative overflow-hidden group shadow-xs ${
+            onClick={() => {
+              if (card.filterValue === 'works' && onOpenLegalWorks) {
+                onOpenLegalWorks();
+              } else {
+                onFilterChange(card.filterValue);
+              }
+            }}
+            className={`p-4 rounded-2xl border text-right transition-all flex flex-col justify-between relative overflow-hidden group ${
               isSelected
-                ? 'bg-white border-2 border-emerald-600 ring-2 ring-emerald-500/20 shadow-md scale-[1.01]'
-                : `bg-white hover:bg-emerald-50/40 border-slate-200 hover:border-emerald-300`
+                ? 'bg-[#F8FAFC] dark:bg-[#1C2838] border-2 border-[#314B6E] dark:border-[#BDB3A3] shadow-md'
+                : 'bg-white dark:bg-[#151E2A] hover:bg-slate-50/80 dark:hover:bg-[#1C2838] border-slate-200 dark:border-[#314B6E] hover:border-[#607EA2] dark:hover:border-[#BDB3A3] shadow-2xs'
             }`}
           >
-            <div className="flex items-center justify-between w-full mb-3">
-              <span className={`text-[11px] font-bold px-2 py-0.5 rounded-full border ${card.color}`}>
+            <div className="flex items-center justify-between w-full mb-3 gap-2">
+              <span className={`text-[11px] font-bold truncate ${card.accentText}`}>
                 {card.badge}
               </span>
               <div className={`p-2 rounded-xl border ${card.iconBox}`}>
@@ -94,10 +103,10 @@ export const StatsCards: React.FC<StatsCardsProps> = ({
             </div>
 
             <div>
-              <div className="text-2xl sm:text-3xl font-black font-mono text-slate-900 group-hover:text-emerald-700 transition">
+              <div className="text-2xl sm:text-3xl font-black font-mono tabular-nums text-[#0E141C] dark:text-[#F2EFE9] group-hover:text-[#314B6E] dark:group-hover:text-[#BDB3A3] transition">
                 {card.count}
               </div>
-              <div className="text-xs font-semibold text-slate-600 mt-1 line-clamp-1">
+              <div className="text-xs font-semibold text-slate-600 dark:text-[#8197AC] mt-1 line-clamp-1">
                 {card.title}
               </div>
             </div>

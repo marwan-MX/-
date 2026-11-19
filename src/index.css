@@ -1,1 +1,58 @@
 @import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --color-kayan-black: #0E141C;
+  --color-kayan-canvas: #F5F7FA;
+  --color-kayan-surface: #FFFFFF;
+  --color-kayan-elevated: #F1F4F8;
+  --color-kayan-police: #314B6E;
+  --color-kayan-rackley: #607EA2;
+  --color-kayan-weldon: #475569;
+  --color-kayan-sand: #BDB3A3;
+  --color-kayan-ink: #0E141C;
+}
+
+@layer base {
+  html {
+    color-scheme: light;
+    background-color: #F5F7FA;
+    color: #0E141C;
+  }
+
+  html.dark {
+    color-scheme: dark;
+    background-color: #0E141C;
+    color: #F2EFE9;
+  }
+
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #F1F4F8;
+  }
+
+  html.dark ::-webkit-scrollbar-track {
+    background: #0E141C;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #CBD5E1;
+    border-radius: 9999px;
+  }
+
+  html.dark ::-webkit-scrollbar-thumb {
+    background: #314B6E;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #94A3B8;
+  }
+
+  html.dark ::-webkit-scrollbar-thumb:hover {
+    background: #607EA2;
+  }
+}

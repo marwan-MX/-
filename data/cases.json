@@ -29,7 +29,8 @@
     "createdByName": "أحمد القحطاني",
     "createdAt": "2026-10-20T19:33:59.480Z",
     "lastModifiedByName": "سالم الشهري",
-    "lastModifiedAt": "2026-11-09T19:34:19.110Z"
+    "lastModifiedAt": "2026-11-09T19:34:19.110Z",
+    "nextHearingDateHijri": "2 جمادى الآخرة 1448 هـ"
   },
   {
     "id": "case-102",
@@ -51,7 +52,8 @@
     "createdByName": "سارة المطيري",
     "createdAt": "2026-10-25T19:33:59.480Z",
     "lastModifiedByName": "سارة المطيري",
-    "lastModifiedAt": "2026-11-04T19:33:59.480Z"
+    "lastModifiedAt": "2026-11-04T19:33:59.480Z",
+    "nextHearingDateHijri": "7 جمادى الآخرة 1448 هـ"
   },
   {
     "id": "case-103",
@@ -105,6 +107,7 @@
     "createdByName": "خالد الزهراني",
     "createdAt": "2026-10-30T19:33:59.480Z",
     "lastModifiedByName": "خالد الزهراني",
-    "lastModifiedAt": "2026-11-08T19:33:59.480Z"
+    "lastModifiedAt": "2026-11-08T19:33:59.480Z",
+    "nextHearingDateHijri": "11 جمادى الآخرة 1448 هـ"
   }
 ]

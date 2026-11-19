@@ -24,8 +24,128 @@ if (!fs.existsSync(BACKUPS_DIR)) {
 }
 
 const CASES_FILE = path.join(DATA_DIR, 'cases.json');
+const LEGAL_WORKS_FILE = path.join(DATA_DIR, 'legal-works.json');
 const LOGS_FILE = path.join(DATA_DIR, 'logs.json');
 const SETTINGS_FILE = path.join(DATA_DIR, 'settings.json');
+
+// Seed Legal Works (سندات لأمر، عقود، استشارات، مطالبات، تحصيل، خدمات شركات)
+const SEED_LEGAL_WORKS = [
+  {
+    id: 'work-201',
+    workNumber: 'سند-448/01',
+    workType: 'سند لأمر',
+    title: 'تحصيل ومتابعة سند لأمر تجاري نافذ',
+    clientName: 'شركة النخبة للخدمات اللوجستية',
+    clientPhone: '0559988771',
+    opponentName: 'مؤسسة إعمار للتوريدات',
+    amount: 175000,
+    status: 'قيد التنفيذ',
+    lawyerInCharge: 'أ. عبد الرحمن السعدي',
+    startDate: '2026-11-01',
+    startDateHijri: '20 جمادى الأولى 1448 هـ',
+    dueDate: '2026-11-25',
+    dueDateHijri: '15 جمادى الآخرة 1448 هـ',
+    priority: 'عاجل',
+    notes: 'تم توجيه إخطار بالسداد بموجب السند لأمر وبانتظار انقضاء المهلة لإيداع طلب التنفيذ عبر منصة نافذ.',
+    documents: [],
+    createdByName: 'أ. عبد الرحمن السعدي',
+    createdAt: new Date(Date.now() - 86400000 * 10).toISOString(),
+    lastModifiedByName: 'أ. عبد الرحمن السعدي',
+    lastModifiedAt: new Date(Date.now() - 86400000 * 2).toISOString(),
+  },
+  {
+    id: 'work-202',
+    workNumber: 'عقد-448/15',
+    workType: 'عقود واتفاقيات',
+    title: 'صياغة ومراجعة عقد شراكة استثمارية وتطوير برمجيات',
+    clientName: 'مجموعة المبتكرون للتقنية',
+    clientPhone: '0501122334',
+    opponentName: 'صندوق الاستثمار التقني',
+    amount: 450000,
+    status: 'قيد التنفيذ',
+    lawyerInCharge: 'أ. فهد التميمي',
+    startDate: '2026-11-05',
+    startDateHijri: '24 جمادى الأولى 1448 هـ',
+    dueDate: '2026-11-20',
+    dueDateHijri: '10 جمادى الآخرة 1448 هـ',
+    priority: 'عادي',
+    notes: 'تمت مراجعة بنود عدم المنافسة وبنود الملكية الفكرية وصياغة مسودة ملحق التوزيع المالي.',
+    documents: [],
+    createdByName: 'أ. فهد التميمي',
+    createdAt: new Date(Date.now() - 86400000 * 6).toISOString(),
+    lastModifiedByName: 'أ. فهد التميمي',
+    lastModifiedAt: new Date(Date.now() - 86400000 * 1).toISOString(),
+  },
+  {
+    id: 'work-203',
+    workNumber: 'استشارة-448/09',
+    workType: 'استشارات قانونية',
+    title: 'مذكرة رأي قانوني بخصوص نظام المعاملات المدنية والمسؤولية العقدية',
+    clientName: 'شركة الراية للتطوير العقاري',
+    clientPhone: '0547766554',
+    opponentName: '—',
+    amount: 25000,
+    status: 'منجز',
+    lawyerInCharge: 'أ. تركي الدوسري',
+    startDate: '2026-10-28',
+    startDateHijri: '16 جمادى الأولى 1448 هـ',
+    dueDate: '2026-11-10',
+    dueDateHijri: '30 جمادى الأولى 1448 هـ',
+    priority: 'عادي',
+    notes: 'تم تسليم المذكرة المعتمدة للرئيس التنفيذي مع تقديم التوصيات التعاقدية.',
+    documents: [],
+    createdByName: 'أ. تركي الدوسري',
+    createdAt: new Date(Date.now() - 86400000 * 14).toISOString(),
+    lastModifiedByName: 'أ. تركي الدوسري',
+    lastModifiedAt: new Date(Date.now() - 86400000 * 2).toISOString(),
+  },
+  {
+    id: 'work-204',
+    workNumber: 'تحصيل-448/03',
+    workType: 'تحصيل ديون',
+    title: 'مطالبة ودية وتحصيل فواتير توريد خرسانة متبقية',
+    clientName: 'مصنع الشرق للخرسانة الجاهزة',
+    clientPhone: '0563322119',
+    opponentName: 'شركة المقاولون الحديثون',
+    amount: 320000,
+    status: 'قيد التنفيذ',
+    lawyerInCharge: 'أ. عبد الرحمن السعدي',
+    startDate: '2026-11-03',
+    startDateHijri: '22 جمادى الأولى 1448 هـ',
+    dueDate: '2026-11-28',
+    dueDateHijri: '18 جمادى الآخرة 1448 هـ',
+    priority: 'عاجل',
+    notes: 'تم عقد اجتماع تسوية وتم الاتفاق على جدولة المبلغ على دفعتين بشيكين مصدقين.',
+    documents: [],
+    createdByName: 'أ. عبد الرحمن السعدي',
+    createdAt: new Date(Date.now() - 86400000 * 8).toISOString(),
+    lastModifiedByName: 'أ. عبد الرحمن السعدي',
+    lastModifiedAt: new Date(Date.now() - 86400000 * 1).toISOString(),
+  },
+  {
+    id: 'work-205',
+    workNumber: 'شركات-448/02',
+    workType: 'خدمات شركات',
+    title: 'تعديل عقد تأسيس وتحويل الكيان القانوني إلى شركة مساهمة مقفلة',
+    clientName: 'مجموعة الأفق القابضة',
+    clientPhone: '0555544332',
+    opponentName: '—',
+    amount: 60000,
+    status: 'بانتظار العميل',
+    lawyerInCharge: 'أ. تركي الدوسري',
+    startDate: '2026-11-08',
+    startDateHijri: '27 جمادى الأولى 1448 هـ',
+    dueDate: '2026-12-01',
+    dueDateHijri: '21 جمادى الآخرة 1448 هـ',
+    priority: 'عادي',
+    notes: 'تم تقديم الأوراق للمركز السعودي للأعمال وبانتظار اعتماد الشركاء للقرار الوزاري.',
+    documents: [],
+    createdByName: 'أ. تركي الدوسري',
+    createdAt: new Date(Date.now() - 86400000 * 4).toISOString(),
+    lastModifiedByName: 'أ. تركي الدوسري',
+    lastModifiedAt: new Date(Date.now() - 86400000 * 1).toISOString(),
+  },
+];
 
 // Initial Default Settings
 const DEFAULT_SETTINGS = {
@@ -104,6 +224,7 @@ const SEED_CASES = [
     circleNumber: 'الدائرة العقارية الثانية',
     caseType: 'قضايا عقارية',
     status: 'منتهية',
+    rulingClassification: 'حكم ابتدائي',
     nextHearingDate: '',
     nextHearingTime: '',
     hearingRequirement: 'استلام الصك النهائي وإحالته لقاضي التنفيذ',
@@ -136,6 +257,7 @@ const SEED_CASES = [
     circleNumber: 'دائرة التنفيذ الخامسة',
     caseType: 'تنفيذ',
     status: 'قيد التنفيذ',
+    rulingClassification: 'تنفيذ أحكام',
     nextHearingDate: new Date(Date.now() + 86400000 * 12).toISOString().split('T')[0],
     nextHearingTime: '11:30',
     hearingRequirement: 'تفعيل قرارات المادة 46 ضد المنفذ ضده',
@@ -180,6 +302,10 @@ function getCases(): any[] {
   return readJSON<any[]>(CASES_FILE, SEED_CASES);
 }
 
+function getLegalWorks(): any[] {
+  return readJSON<any[]>(LEGAL_WORKS_FILE, SEED_LEGAL_WORKS);
+}
+
 function getLogs(): any[] {
   return readJSON<any[]>(LOGS_FILE, [
     {
@@ -207,6 +333,7 @@ function createAutoBackup(type: 'تلقائي' | 'يدوي' = 'تلقائي') {
       type,
       settings: getSettings(),
       cases: getCases(),
+      works: getLegalWorks(),
       logs: getLogs(),
     };
     fs.writeFileSync(path.join(BACKUPS_DIR, filename), JSON.stringify(backupData, null, 2), 'utf-8');
@@ -310,6 +437,9 @@ if (!fs.existsSync(SETTINGS_FILE)) {
 }
 if (!fs.existsSync(CASES_FILE)) {
   writeJSON(CASES_FILE, SEED_CASES);
+}
+if (!fs.existsSync(LEGAL_WORKS_FILE)) {
+  writeJSON(LEGAL_WORKS_FILE, SEED_LEGAL_WORKS);
 }
 if (!fs.existsSync(LOGS_FILE)) {
   writeJSON(LOGS_FILE, []);
@@ -449,6 +579,9 @@ app.put('/api/cases/:id', (req, res) => {
 
   if (oldCase.status !== caseData.status) {
     changes.push(`تغيير الحالة من [${oldCase.status}] إلى [${caseData.status}]`);
+  }
+  if ((oldCase.rulingClassification || '') !== (caseData.rulingClassification || '')) {
+    changes.push(`تغيير تصنيف الحكم من [${oldCase.rulingClassification || 'غير محدد'}] إلى [${caseData.rulingClassification || 'غير محدد'}]`);
   }
   if (oldCase.nextHearingDate !== caseData.nextHearingDate) {
     changes.push(`تعديل موعد الجلسة إلى [${caseData.nextHearingDate || 'غير محدد'}]`);
@@ -721,6 +854,342 @@ app.patch('/api/cases/:id/status', (req, res) => {
   });
 });
 
+// Quick Ruling Classification Update (Protected)
+app.patch('/api/cases/:id/ruling', (req, res) => {
+  const { id } = req.params;
+  const { password, employeeName, rulingClassification } = req.body;
+
+  const auth = verifyPassword(password);
+  if (!auth.success) {
+    return res.status(401).json({ success: false, message: auth.error });
+  }
+
+  const nameVal = validateEmployeeName(employeeName);
+  if (!nameVal.valid) {
+    return res.status(400).json({ success: false, message: nameVal.error });
+  }
+
+  const cases = getCases();
+  const caseItem = cases.find((c: any) => c.id === id);
+  if (!caseItem) {
+    return res.status(404).json({ success: false, message: 'القضية غير موجودة' });
+  }
+
+  const oldRuling = caseItem.rulingClassification || 'غير محدد';
+  const nextRuling = rulingClassification ? String(rulingClassification).trim() : '';
+  if (nextRuling) {
+    caseItem.rulingClassification = nextRuling;
+  } else {
+    delete caseItem.rulingClassification;
+  }
+  caseItem.lastModifiedByName = employeeName.trim();
+  caseItem.lastModifiedAt = new Date().toISOString();
+
+  writeJSON(CASES_FILE, cases);
+
+  // Audit Log
+  addAuditLog({
+    employeeName,
+    actionType: 'تغيير تصنيف الحكم',
+    caseId: caseItem.id,
+    caseNumber: caseItem.caseNumber,
+    caseTitle: caseItem.title,
+    details: `تم تغيير تصنيف الحكم من [${oldRuling}] إلى [${nextRuling || 'غير محدد'}]`,
+    ip: req.ip,
+  });
+
+  return res.json({
+    success: true,
+    data: caseItem,
+    message: 'تم تحديث تصنيف الحكم وتسجيل الإجراء',
+  });
+});
+
+// ======================= LEGAL WORKS & OPERATIONS ROUTES =======================
+
+// Public: Get all legal works
+app.get('/api/legal-works', (req, res) => {
+  const works = getLegalWorks();
+  res.json({
+    success: true,
+    data: works,
+    serverTime: new Date().toISOString(),
+  });
+});
+
+// Create Legal Work (Protected)
+app.post('/api/legal-works', (req, res) => {
+  const { workData, password, employeeName } = req.body;
+
+  const auth = verifyPassword(password);
+  if (!auth.success) {
+    return res.status(401).json({ success: false, message: auth.error });
+  }
+
+  const nameVal = validateEmployeeName(employeeName);
+  if (!nameVal.valid) {
+    return res.status(400).json({ success: false, message: nameVal.error });
+  }
+
+  if (!workData || !workData.title || !workData.workType || !workData.clientName) {
+    return res.status(400).json({
+      success: false,
+      message: 'الرجاء ملء الحقول الإلزامية: نوع العمل، موضوع العمل، واسم العميل / المستفيد',
+    });
+  }
+
+  const works = getLegalWorks();
+  const workNumber = workData.workNumber?.trim() || `عمل-${Date.now().toString().slice(-6)}`;
+
+  const newWork = {
+    id: `work-${Date.now()}`,
+    workNumber,
+    workType: workData.workType,
+    title: workData.title.trim(),
+    clientName: workData.clientName.trim(),
+    clientPhone: workData.clientPhone?.trim() || '',
+    opponentName: workData.opponentName?.trim() || '—',
+    amount: workData.amount ? Number(workData.amount) : undefined,
+    status: workData.status || 'قيد التنفيذ',
+    lawyerInCharge: workData.lawyerInCharge?.trim() || employeeName.trim(),
+    startDate: workData.startDate || new Date().toISOString().split('T')[0],
+    startDateHijri: workData.startDateHijri || '',
+    dueDate: workData.dueDate || '',
+    dueDateHijri: workData.dueDateHijri || '',
+    priority: workData.priority || 'عادي',
+    notes: workData.notes || '',
+    documents: Array.isArray(workData.documents) ? workData.documents : [],
+    createdByName: employeeName.trim(),
+    createdAt: new Date().toISOString(),
+    lastModifiedByName: employeeName.trim(),
+    lastModifiedAt: new Date().toISOString(),
+  };
+
+  works.unshift(newWork);
+  writeJSON(LEGAL_WORKS_FILE, works);
+
+  // Audit Log
+  addAuditLog({
+    employeeName,
+    actionType: 'إضافة عمل قانوني',
+    caseNumber: newWork.workNumber,
+    caseTitle: `[${newWork.workType}] ${newWork.title}`,
+    details: `تم تسجيل عمل قانوني جديد (${newWork.workType} - رقم: ${newWork.workNumber}) للموكل (${newWork.clientName}) وتعيين المحامي المسؤول (${newWork.lawyerInCharge})`,
+    ip: req.ip,
+  });
+
+  createAutoBackup('يدوي');
+
+  return res.json({
+    success: true,
+    data: newWork,
+    message: 'تم تسجيل العمل القانوني بنجاح وإضافته لجدول الأعمال',
+  });
+});
+
+// Update Legal Work (Protected)
+app.put('/api/legal-works/:id', (req, res) => {
+  const { id } = req.params;
+  const { workData, password, employeeName } = req.body;
+
+  const auth = verifyPassword(password);
+  if (!auth.success) {
+    return res.status(401).json({ success: false, message: auth.error });
+  }
+
+  const nameVal = validateEmployeeName(employeeName);
+  if (!nameVal.valid) {
+    return res.status(400).json({ success: false, message: nameVal.error });
+  }
+
+  const works = getLegalWorks();
+  const index = works.findIndex((w: any) => w.id === id);
+  if (index === -1) {
+    return res.status(404).json({ success: false, message: 'العمل القانوني غير موجود' });
+  }
+
+  const existing = works[index];
+  const updatedWork = {
+    ...existing,
+    ...workData,
+    id: existing.id,
+    createdByName: existing.createdByName,
+    createdAt: existing.createdAt,
+    lastModifiedByName: employeeName.trim(),
+    lastModifiedAt: new Date().toISOString(),
+  };
+
+  works[index] = updatedWork;
+  writeJSON(LEGAL_WORKS_FILE, works);
+
+  // Audit Log
+  addAuditLog({
+    employeeName,
+    actionType: 'تعديل عمل قانوني',
+    caseNumber: updatedWork.workNumber,
+    caseTitle: `[${updatedWork.workType}] ${updatedWork.title}`,
+    details: `تم تحديث بيانات المعاملة القانونية (${updatedWork.workNumber}) للمستفيد (${updatedWork.clientName})`,
+    ip: req.ip,
+  });
+
+  return res.json({
+    success: true,
+    data: updatedWork,
+    message: 'تم حفظ تعديلات العمل القانوني بنجاح',
+  });
+});
+
+// Delete Legal Work (Protected)
+app.delete('/api/legal-works/:id', (req, res) => {
+  const { id } = req.params;
+  const { password, employeeName } = req.body;
+
+  const auth = verifyPassword(password);
+  if (!auth.success) {
+    return res.status(401).json({ success: false, message: auth.error });
+  }
+
+  const nameVal = validateEmployeeName(employeeName);
+  if (!nameVal.valid) {
+    return res.status(400).json({ success: false, message: nameVal.error });
+  }
+
+  const works = getLegalWorks();
+  const targetWork = works.find((w: any) => w.id === id);
+  if (!targetWork) {
+    return res.status(404).json({ success: false, message: 'العمل القانوني غير موجود' });
+  }
+
+  const filtered = works.filter((w: any) => w.id !== id);
+  writeJSON(LEGAL_WORKS_FILE, filtered);
+
+  // Audit Log
+  addAuditLog({
+    employeeName,
+    actionType: 'حذف عمل قانوني',
+    caseNumber: targetWork.workNumber,
+    caseTitle: `[${targetWork.workType}] ${targetWork.title}`,
+    details: `تم حذف المعاملة القانونية رقم (${targetWork.workNumber}) الخاصة بـ (${targetWork.clientName}) نهائياً`,
+    ip: req.ip,
+  });
+
+  createAutoBackup('يدوي');
+
+  return res.json({
+    success: true,
+    message: 'تم حذف العمل القانوني بنجاح وتسجيل الإجراء في سجل الرقابة',
+  });
+});
+
+// Quick Status Update for Legal Work (Protected)
+app.patch('/api/legal-works/:id/status', (req, res) => {
+  const { id } = req.params;
+  const { password, employeeName, status } = req.body;
+
+  const auth = verifyPassword(password);
+  if (!auth.success) {
+    return res.status(401).json({ success: false, message: auth.error });
+  }
+
+  const nameVal = validateEmployeeName(employeeName);
+  if (!nameVal.valid) {
+    return res.status(400).json({ success: false, message: nameVal.error });
+  }
+
+  const works = getLegalWorks();
+  const workItem = works.find((w: any) => w.id === id);
+  if (!workItem) {
+    return res.status(404).json({ success: false, message: 'العمل القانوني غير موجود' });
+  }
+
+  const oldStatus = workItem.status;
+  workItem.status = status;
+  workItem.lastModifiedByName = employeeName.trim();
+  workItem.lastModifiedAt = new Date().toISOString();
+
+  writeJSON(LEGAL_WORKS_FILE, works);
+
+  // Audit Log
+  addAuditLog({
+    employeeName,
+    actionType: 'تغيير حالة عمل',
+    caseNumber: workItem.workNumber,
+    caseTitle: `[${workItem.workType}] ${workItem.title}`,
+    details: `تم تغيير حالة العمل القانوني (${workItem.workNumber}) من [${oldStatus}] إلى [${status}]`,
+    ip: req.ip,
+  });
+
+  return res.json({
+    success: true,
+    data: workItem,
+    message: 'تم تحديث حالة المعاملة القانونية بنجاح',
+  });
+});
+
+// Attach Document / File to Legal Work (Protected)
+app.post('/api/legal-works/:id/documents', (req, res) => {
+  const { id } = req.params;
+  const { password, employeeName, documentData } = req.body;
+
+  const auth = verifyPassword(password);
+  if (!auth.success) {
+    return res.status(401).json({ success: false, message: auth.error });
+  }
+
+  const nameVal = validateEmployeeName(employeeName);
+  if (!nameVal.valid) {
+    return res.status(400).json({ success: false, message: nameVal.error });
+  }
+
+  if (!documentData || !documentData.title) {
+    return res.status(400).json({ success: false, message: 'عنوان أو وصف المستند مطلوب' });
+  }
+
+  const works = getLegalWorks();
+  const workItem = works.find((w: any) => w.id === id);
+  if (!workItem) {
+    return res.status(404).json({ success: false, message: 'العمل القانوني غير موجود' });
+  }
+
+  const newDoc = {
+    id: `doc-${Date.now()}`,
+    title: documentData.title.trim(),
+    lawyerName: employeeName.trim(),
+    date: documentData.date || new Date().toISOString().split('T')[0],
+    notes: documentData.notes || '',
+    fileName: documentData.fileName || '',
+    fileSize: documentData.fileSize || '',
+    fileType: documentData.fileType || '',
+    fileDataUrl: documentData.fileDataUrl || '',
+    createdAt: new Date().toISOString(),
+  };
+
+  if (!Array.isArray(workItem.documents)) {
+    workItem.documents = [];
+  }
+  workItem.documents.unshift(newDoc);
+  workItem.lastModifiedByName = employeeName.trim();
+  workItem.lastModifiedAt = new Date().toISOString();
+
+  writeJSON(LEGAL_WORKS_FILE, works);
+
+  // Audit Log
+  addAuditLog({
+    employeeName,
+    actionType: 'إضافة لائحة',
+    caseNumber: workItem.workNumber,
+    caseTitle: `[${workItem.workType}] ${workItem.title}`,
+    details: `تم إرفاق مستند/ملف جديد (${newDoc.title}) للمعاملة (${workItem.workNumber})${newDoc.fileName ? ` ملف: ${newDoc.fileName}` : ''}`,
+    ip: req.ip,
+  });
+
+  return res.json({
+    success: true,
+    data: workItem,
+    message: 'تم إرفاق المستند بالمعاملة القانونية بنجاح',
+  });
+});
+
 // ======================= ADMIN ONLY ROUTES =======================
 
 // Middleware to verify admin password for all /api/admin/*
@@ -870,6 +1339,7 @@ app.get('/api/admin/export', (req, res) => {
     exportDate: new Date().toISOString(),
     firmName: getSettings().firmName,
     cases: getCases(),
+    works: getLegalWorks(),
     logs: getLogs(),
     settings: {
       employeePassword: getSettings().employeePassword,
@@ -892,6 +1362,9 @@ app.post('/api/admin/restore', (req, res) => {
   createAutoBackup('يدوي');
 
   writeJSON(CASES_FILE, backupData.cases);
+  if (Array.isArray(backupData.works)) {
+    writeJSON(LEGAL_WORKS_FILE, backupData.works);
+  }
   if (Array.isArray(backupData.logs)) {
     writeJSON(LOGS_FILE, backupData.logs);
   }
@@ -899,7 +1372,7 @@ app.post('/api/admin/restore', (req, res) => {
   addAuditLog({
     employeeName: 'المدير العام',
     actionType: 'استعادة نسخة احتياطية',
-    details: `تمت استعادة نسخة احتياطية تحتوي على (${backupData.cases.length}) قضية بنجاح`,
+    details: `تمت استعادة نسخة احتياطية تحتوي على (${backupData.cases.length}) قضية و (${Array.isArray(backupData.works) ? backupData.works.length : 0}) عمل قانوني بنجاح`,
     ip: req.ip,
   });
 

@@ -1,4 +1,4 @@
-import { CaseItem, AuditLogItem, SystemSettings, BackupMetadata } from '../types';
+import { CaseItem, LegalWorkItem, AuditLogItem, SystemSettings, BackupMetadata } from '../types';
 
 export const API_BASE = '/api';
 
@@ -152,6 +152,24 @@ export async function updateCaseStatus(
   return data.data;
 }
 
+export async function updateCaseRuling(
+  caseId: string,
+  rulingClassification: string,
+  employeeName: string,
+  password: string
+): Promise<CaseItem> {
+  const res = await fetch(`${API_BASE}/cases/${caseId}/ruling`, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ rulingClassification, employeeName, password }),
+  });
+  const data = await res.json();
+  if (!res.ok || !data.success) {
+    throw new Error(data.message || 'فشل تحديث تصنيف الحكم');
+  }
+  return data.data;
+}
+
 export async function addLegalPleading(
   caseId: string,
   pleadingData: {
@@ -174,6 +192,112 @@ export async function addLegalPleading(
   const data = await res.json();
   if (!res.ok || !data.success) {
     throw new Error(data.message || 'فشل إضافة اللائحة وإرفاق الملف');
+  }
+  return data.data;
+}
+
+// ======================= LEGAL WORKS CLIENT API =======================
+
+export async function fetchLegalWorks(): Promise<{ works: LegalWorkItem[]; serverTime: string }> {
+  const res = await fetch(`${API_BASE}/legal-works`);
+  if (!res.ok) {
+    throw new Error('فشل جلب بيانات الأعمال والخدمات القانونية');
+  }
+  const json = await res.json();
+  return { works: json.data || [], serverTime: json.serverTime };
+}
+
+export async function createLegalWork(
+  workData: Partial<LegalWorkItem>,
+  employeeName: string,
+  password: string
+): Promise<LegalWorkItem> {
+  const res = await fetch(`${API_BASE}/legal-works`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ workData, employeeName, password }),
+  });
+  const data = await res.json();
+  if (!res.ok || !data.success) {
+    throw new Error(data.message || 'فشل تسجيل العمل القانوني');
+  }
+  return data.data;
+}
+
+export async function updateLegalWork(
+  id: string,
+  workData: Partial<LegalWorkItem>,
+  employeeName: string,
+  password: string
+): Promise<LegalWorkItem> {
+  const res = await fetch(`${API_BASE}/legal-works/${id}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ workData, employeeName, password }),
+  });
+  const data = await res.json();
+  if (!res.ok || !data.success) {
+    throw new Error(data.message || 'فشل تعديل العمل القانوني');
+  }
+  return data.data;
+}
+
+export async function deleteLegalWork(
+  id: string,
+  employeeName: string,
+  password: string
+): Promise<void> {
+  const res = await fetch(`${API_BASE}/legal-works/${id}`, {
+    method: 'DELETE',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ employeeName, password }),
+  });
+  const data = await res.json();
+  if (!res.ok || !data.success) {
+    throw new Error(data.message || 'فشل حذف العمل القانوني');
+  }
+}
+
+export async function updateLegalWorkStatus(
+  id: string,
+  status: string,
+  employeeName: string,
+  password: string
+): Promise<LegalWorkItem> {
+  const res = await fetch(`${API_BASE}/legal-works/${id}/status`, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ status, employeeName, password }),
+  });
+  const data = await res.json();
+  if (!res.ok || !data.success) {
+    throw new Error(data.message || 'فشل تحديث حالة العمل');
+  }
+  return data.data;
+}
+
+export async function addLegalWorkDocument(
+  id: string,
+  documentData: {
+    title: string;
+    date?: string;
+    notes?: string;
+    fileName?: string;
+    fileSize?: string;
+    fileType?: string;
+    fileDataUrl?: string;
+  },
+  employeeName: string,
+  password: string
+): Promise<LegalWorkItem> {
+  const res = await fetch(`${API_BASE}/legal-works/${id}/documents`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ documentData, employeeName, password }),
+  });
+  const data = await res.json();
+  if (!res.ok || !data.success) {
+    throw new Error(data.message || 'فشل إرفاق المستند');
   }
   return data.data;
 }

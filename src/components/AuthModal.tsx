@@ -125,34 +125,34 @@ export const AuthModal: React.FC<AuthModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-fadeIn">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/45 dark:bg-[#070B10]/80 backdrop-blur-sm animate-fadeIn">
       <div 
-        className="bg-white border border-emerald-200 w-full max-w-md rounded-2xl shadow-2xl overflow-hidden relative"
+        className="bg-white dark:bg-[#151E2A] border border-slate-200 dark:border-[#314B6E] w-full max-w-md rounded-2xl shadow-2xl overflow-hidden relative text-[#0E141C] dark:text-[#F2EFE9]"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Top Header Pattern */}
-        <div className="bg-emerald-900 p-5 text-center text-white relative">
+        <div className="bg-[#F8FAFC] dark:bg-[#0E141C] p-5 text-center text-[#0E141C] dark:text-[#F2EFE9] relative border-b border-slate-200 dark:border-[#314B6E]">
           <button
             onClick={onClose}
-            className="absolute top-4 left-4 p-1.5 rounded-lg text-emerald-200 hover:text-white hover:bg-emerald-800 transition"
+            className="absolute top-4 left-4 p-1.5 rounded-lg text-slate-500 dark:text-[#8197AC] hover:text-[#0E141C] dark:hover:text-[#F2EFE9] hover:bg-slate-200/70 dark:hover:bg-[#1C2838] transition"
           >
             <X className="w-5 h-5" />
           </button>
           
-          <div className="w-12 h-12 mx-auto rounded-2xl bg-white/10 border border-white/20 flex items-center justify-center mb-2 shadow-inner">
-            <Lock className="w-6 h-6 text-white" />
+          <div className="w-12 h-12 mx-auto rounded-2xl bg-[#F6F2EB] dark:bg-[#1C2838] border border-[#BDB3A3]/70 dark:border-[#BDB3A3]/50 flex items-center justify-center mb-2 shadow-2xs">
+            <Lock className="w-6 h-6 text-[#314B6E] dark:text-[#BDB3A3]" />
           </div>
 
-          <h3 className="text-lg font-bold text-white">
+          <h3 className="text-lg font-bold text-[#0E141C] dark:text-[#F2EFE9]">
             {actionTitle}
           </h3>
-          <p className="text-xs text-emerald-100 mt-1 max-w-sm mx-auto leading-relaxed">
+          <p className="text-xs text-slate-600 dark:text-[#8197AC] mt-1 max-w-sm mx-auto leading-relaxed">
             {actionDescription}
           </p>
         </div>
 
         {/* Role Switcher Tabs */}
-        <div className="flex border-b border-slate-200 bg-slate-50 p-1.5 gap-1.5">
+        <div className="flex border-b border-slate-200 dark:border-[#314B6E] bg-[#F1F4F8] dark:bg-[#0E141C]/80 p-1.5 gap-1.5">
           <button
             type="button"
             onClick={() => {
@@ -161,11 +161,11 @@ export const AuthModal: React.FC<AuthModalProps> = ({
             }}
             className={`flex-1 py-2 text-xs font-bold rounded-xl transition flex items-center justify-center gap-1.5 ${
               role === 'employee'
-                ? 'bg-emerald-700 text-white shadow-xs'
-                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200'
+                ? 'bg-[#314B6E] text-white shadow-xs'
+                : 'text-slate-600 dark:text-[#8197AC] hover:text-[#0E141C] dark:hover:text-[#F2EFE9] hover:bg-white/70 dark:hover:bg-[#1C2838]'
             }`}
           >
-            <User className="w-4 h-4" />
+            <User className={`w-4 h-4 ${role === 'employee' ? 'text-[#BDB3A3]' : 'text-slate-500 dark:text-[#8197AC]'}`} />
             <span>دخول محامي</span>
           </button>
           
@@ -177,11 +177,11 @@ export const AuthModal: React.FC<AuthModalProps> = ({
             }}
             className={`flex-1 py-2 text-xs font-bold rounded-xl transition flex items-center justify-center gap-1.5 ${
               role === 'admin'
-                ? 'bg-emerald-700 text-white shadow-xs'
-                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200'
+                ? 'bg-[#314B6E] text-white shadow-xs'
+                : 'text-slate-600 dark:text-[#8197AC] hover:text-[#0E141C] dark:hover:text-[#F2EFE9] hover:bg-white/70 dark:hover:bg-[#1C2838]'
             }`}
           >
-            <Key className="w-4 h-4" />
+            <Key className={`w-4 h-4 ${role === 'admin' ? 'text-[#BDB3A3]' : 'text-slate-500 dark:text-[#8197AC]'}`} />
             <span>دخول الإدارة والمدير</span>
           </button>
         </div>
@@ -193,11 +193,11 @@ export const AuthModal: React.FC<AuthModalProps> = ({
           {(role === 'employee' || requireName) && (
             <div className="space-y-1.5">
               <div className="flex items-center justify-between">
-                <label className="text-xs font-bold text-slate-800 flex items-center gap-1">
+                <label className="text-xs font-bold text-[#0E141C] dark:text-[#F2EFE9] flex items-center gap-1">
                   <span>اسم المحامي المسئول:</span>
-                  <span className="text-emerald-700">*</span>
+                  <span className="text-rose-600 dark:text-rose-400">*</span>
                 </label>
-                <span className="text-[10px] text-emerald-700 font-bold bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                <span className="text-[10px] text-[#7A6B54] dark:text-[#BDB3A3] font-bold bg-[#F6F2EB] dark:bg-[#1C2838] px-2 py-0.5 rounded border border-[#BDB3A3]/70 dark:border-[#BDB3A3]/50">
                   ممنوع الأرقام والرموز
                 </span>
               </div>
@@ -208,22 +208,22 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                   onChange={handleNameChange}
                   placeholder="مثال: أحمد عبد الله السعدي"
                   required
-                  className={`w-full bg-slate-50 border rounded-xl px-3.5 py-2.5 text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:bg-white transition ${
+                  className={`w-full bg-slate-50 dark:bg-[#0E141C] border rounded-xl px-3.5 py-2.5 text-sm text-[#0E141C] dark:text-[#F2EFE9] placeholder-slate-400 dark:placeholder-[#8197AC]/60 focus:bg-white dark:focus:bg-[#151E2A] focus:outline-none transition ${
                     nameError 
                       ? 'border-rose-500 focus:ring-1 focus:ring-rose-500' 
-                      : 'border-slate-300 focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600'
+                      : 'border-slate-300 dark:border-[#314B6E] focus:border-[#314B6E] dark:focus:border-[#BDB3A3] focus:ring-1 focus:ring-[#314B6E]/25 dark:focus:ring-[#BDB3A3]/30'
                   }`}
                 />
               </div>
 
               {nameError && (
-                <div className="flex items-center gap-1.5 text-rose-600 text-xs mt-1">
-                  <AlertCircle className="w-3.5 h-3.5 flex-shrink-0" />
+                <div className="flex items-center gap-1.5 text-rose-700 dark:text-rose-300 text-xs mt-1">
+                  <AlertCircle className="w-3.5 h-3.5 flex-shrink-0 text-rose-600 dark:text-rose-400" />
                   <span>{nameError}</span>
                 </div>
               )}
-              <p className="text-[11px] text-slate-500 leading-snug">
-                سيتِم تسجيل هذا الاسم في سجل العمليات الخاص بالمدير عند كل إضافة أو تعديل أو حذف.
+              <p className="text-[11px] text-slate-500 dark:text-[#8197AC] leading-snug">
+                سيتم تسجيل هذا الاسم في سجل العمليات الخاص بالمدير عند كل إضافة أو تعديل أو حذف.
               </p>
             </div>
           )}
@@ -231,11 +231,11 @@ export const AuthModal: React.FC<AuthModalProps> = ({
           {/* Password Input */}
           <div className="space-y-1.5">
             <div className="flex items-center justify-between">
-              <label className="text-xs font-bold text-slate-800 flex items-center gap-1">
+              <label className="text-xs font-bold text-[#0E141C] dark:text-[#F2EFE9] flex items-center gap-1">
                 <span>{role === 'admin' ? 'كلمة مرور المدير / الإدارة:' : 'كلمة مرور المحامي:'}</span>
-                <span className="text-emerald-700">*</span>
+                <span className="text-rose-600 dark:text-rose-400">*</span>
               </label>
-              <span className="text-[10px] text-slate-500 font-mono">
+              <span className="text-[10px] text-slate-500 dark:text-[#8197AC] font-mono">
                 {role === 'admin' ? 'الافتراضية: 123456789' : 'الافتراضية: كيان 1423'}
               </span>
             </div>
@@ -246,26 +246,26 @@ export const AuthModal: React.FC<AuthModalProps> = ({
               onChange={(e) => setPassword(e.target.value)}
               placeholder="اكتب كلمة المرور هنا..."
               required
-              className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:border-emerald-600 focus:bg-white focus:ring-1 focus:ring-emerald-600 transition"
+              className="w-full bg-slate-50 dark:bg-[#0E141C] border border-slate-300 dark:border-[#314B6E] rounded-xl px-3.5 py-2.5 text-sm text-[#0E141C] dark:text-[#F2EFE9] placeholder-slate-400 dark:placeholder-[#8197AC]/60 focus:bg-white dark:focus:bg-[#151E2A] focus:outline-none focus:border-[#314B6E] dark:focus:border-[#BDB3A3] focus:ring-1 focus:ring-[#314B6E]/25 dark:focus:ring-[#BDB3A3]/30 transition"
             />
           </div>
 
           {/* General Error Message */}
           {generalError && (
-            <div className="p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs flex items-center gap-2">
-              <AlertCircle className="w-4 h-4 flex-shrink-0 text-rose-600" />
+            <div className="p-3 rounded-xl bg-rose-50 dark:bg-rose-950/70 border border-rose-200 dark:border-rose-500/40 text-rose-700 dark:text-rose-200 text-xs flex items-center gap-2">
+              <AlertCircle className="w-4 h-4 flex-shrink-0 text-rose-600 dark:text-rose-400" />
               <span>{generalError}</span>
             </div>
           )}
 
           {/* Remember Me Option */}
           <div className="flex items-center justify-between pt-1">
-            <label className="flex items-center gap-2 text-xs text-slate-600 cursor-pointer select-none">
+            <label className="flex items-center gap-2 text-xs text-slate-600 dark:text-[#8197AC] cursor-pointer select-none">
               <input
                 type="checkbox"
                 checked={rememberMe}
                 onChange={(e) => setRememberMe(e.target.checked)}
-                className="w-4 h-4 rounded border-slate-300 text-emerald-700 focus:ring-emerald-600"
+                className="w-4 h-4 rounded border-slate-300 dark:border-[#314B6E] bg-white dark:bg-[#0E141C] accent-[#314B6E] dark:accent-[#BDB3A3]"
               />
               <span>تذكر جلستي لتسهيل متابعة العمل دون إعادة كتابة كلمة المرور</span>
             </label>
@@ -275,20 +275,20 @@ export const AuthModal: React.FC<AuthModalProps> = ({
           <button
             type="submit"
             disabled={isLoading || !!nameError}
-            className="w-full py-3 rounded-xl font-bold text-sm bg-emerald-700 hover:bg-emerald-800 text-white shadow-md shadow-emerald-700/20 transition flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full py-3 rounded-xl font-bold text-sm bg-[#314B6E] hover:bg-[#243954] text-white shadow-sm transition flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed active:scale-95"
           >
             {isLoading ? (
               <span className="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full" />
             ) : (
-              <CheckCircle className="w-4 h-4" />
+              <CheckCircle className="w-4 h-4 text-[#BDB3A3]" />
             )}
             <span>تأكيد المتابعة والدخول</span>
           </button>
         </form>
 
         {/* Security Notice Footer */}
-        <div className="bg-slate-50 p-3 border-t border-slate-200 text-[11px] text-slate-500 text-center flex items-center justify-center gap-1.5">
-          <ShieldAlert className="w-3.5 h-3.5 text-emerald-700" />
+        <div className="bg-[#F8FAFC] dark:bg-[#0E141C] p-3 border-t border-slate-200 dark:border-[#314B6E] text-[11px] text-slate-600 dark:text-[#8197AC] text-center flex items-center justify-center gap-1.5">
+          <ShieldAlert className="w-3.5 h-3.5 text-[#314B6E] dark:text-[#BDB3A3]" />
           <span>هذا النظام مخصص لمحامي كيان الإجادة والمدير فقط؛ يمنع مشاركة كلمة المرور مع العملاء.</span>
         </div>
       </div>

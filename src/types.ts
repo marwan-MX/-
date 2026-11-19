@@ -19,6 +19,12 @@ export type HearingStatus =
   | 'منعقدة'
   | 'ملغاة';
 
+export type RulingClassification =
+  | 'حكم ابتدائي'
+  | 'استئناف أو الأحكام النهائية'
+  | 'تنفيذ أحكام'
+  | 'قضية مؤرشفة';
+
 export interface HearingNote {
   id: string;
   date: string; // YYYY-MM-DD
@@ -52,8 +58,10 @@ export interface CaseItem {
   court: string;             // المحكمة
   circleNumber?: string;     // الدائرة
   nextHearingDate?: string;  // موعد الجلسة القادم (ميلادي)
+  nextHearingDateHijri?: string; // موعد الجلسة القادم (هجري)
   nextHearingTime?: string;  // وقت الجلسة
   status: CaseStatus;        // حالة القضية (قيد التنفيذ-منتهية-مؤرشفة-قيد النظر)
+  rulingClassification?: RulingClassification | string; // تصنيف الحكم
   lawyerInCharge: string;    // المحامي المسؤول
   hearingStatus?: HearingStatus;// حالة الجلسة (بانتظار التحديد-محددة-مؤجلة-منعقدة-ملغاة)
   hearingRequirement?: string;// أخر إجراء / ملاحظات
@@ -73,13 +81,58 @@ export interface CaseItem {
   lastModifiedAt: string;    // تاريخ آخر تعديل
 }
 
+export type LegalWorkType = 
+  | 'سند لأمر'
+  | 'عقود واتفاقيات'
+  | 'استشارات قانونية'
+  | 'مطالبات وإخطارات'
+  | 'تحصيل ديون'
+  | 'خدمات شركات'
+  | 'أخرى';
+
+export type LegalWorkStatus = 
+  | 'قيد التنفيذ'
+  | 'منجز'
+  | 'معلق'
+  | 'بانتظار العميل'
+  | 'مؤرشف';
+
+export interface LegalWorkItem {
+  id: string;
+  workNumber: string;         // رقم العمل / السند / المعاملة
+  workType: LegalWorkType | string;// نوع العمل القانوني
+  title: string;              // موضوع / عنوان العمل
+  clientName: string;         // العميل / المستفيد
+  clientPhone?: string;       // هاتف العميل
+  opponentName?: string;      // الطرف الآخر / المدين / الطرف الثاني
+  amount?: number;            // قيمة السند / المطالبة / العقد إن وجد
+  status: LegalWorkStatus;    // حالة العمل
+  lawyerInCharge: string;     // المحامي المسؤول
+  startDate?: string;         // تاريخ البدء / التحرير (ميلادي)
+  startDateHijri?: string;    // تاريخ البدء (هجري)
+  dueDate?: string;           // تاريخ الاستحقاق / الإنجاز (ميلادي)
+  dueDateHijri?: string;      // تاريخ الاستحقاق (هجري)
+  priority?: 'عاجل' | 'عادي' | 'منخفض';
+  notes?: string;             // أخر إجراء وملاحظات
+  documents?: LegalPleading[];// المستندات والملفات المرفقة (Word, Excel, PDF)
+  createdByName: string;      // اسم المحامي المنشئ
+  createdAt: string;
+  lastModifiedByName: string;
+  lastModifiedAt: string;
+}
+
 export type ActionType = 
   | 'إضافة قضية'
   | 'تعديل قضية'
   | 'حذف قضية'
   | 'تغيير حالة'
+  | 'تغيير تصنيف الحكم'
   | 'إضافة جلسة أو ملاحظة'
   | 'إضافة لائحة'
+  | 'إضافة عمل قانوني'
+  | 'تعديل عمل قانوني'
+  | 'حذف عمل قانوني'
+  | 'تغيير حالة عمل'
   | 'استعادة نسخة احتياطية'
   | 'تغيير كلمة المرور';
 

@@ -1,5 +1,6 @@
 import * as XLSX from 'xlsx';
-import { CaseItem } from '../types';
+import { CaseItem, LegalWorkItem } from '../types';
+import { gregorianToHijri } from './dateUtils';
 
 /**
  * Format currency in Saudi Riyals
@@ -28,8 +29,10 @@ export const exportToExcel = (cases: CaseItem[], customTitle = 'قضايا_كي�
       'المحكمة': c.court || '-',
       'الدائرة القضائية': c.circleNumber || '-',
       'حالة القضية': c.status || '-',
+      'تصنيف الحكم': c.rulingClassification || 'غير محدد',
       'المحامي المسؤول': c.lawyerInCharge || '-',
-      'تاريخ الجلسة القادمة': c.nextHearingDate || 'غير محدد',
+      'تاريخ الجلسة (ميلادي)': c.nextHearingDate || 'غير محدد',
+      'تاريخ الجلسة (هجري)': c.nextHearingDate ? (gregorianToHijri(c.nextHearingDate)?.formattedText || '-') : '-',
       'وقت الجلسة': c.nextHearingTime || '-',
       'حالة الجلسة': c.hearingStatus || 'بانتظار التحديد',
       'أخر إجراء / ملاحظات': c.hearingRequirement || '-',
@@ -54,8 +57,10 @@ export const exportToExcel = (cases: CaseItem[], customTitle = 'قضايا_كي�
     { wch: 22 }, // المحكمة
     { wch: 18 }, // الدائرة القضائية
     { wch: 15 }, // حالة القضية
+    { wch: 24 }, // تصنيف الحكم
     { wch: 20 }, // المحامي المسؤول
-    { wch: 16 }, // تاريخ الجلسة
+    { wch: 16 }, // تاريخ الجلسة ميلادي
+    { wch: 20 }, // تاريخ الجلسة هجري
     { wch: 12 }, // وقت الجلسة
     { wch: 16 }, // حالة الجلسة
     { wch: 35 }, // أخر إجراء
@@ -101,9 +106,16 @@ export const exportToWord = (cases: CaseItem[], customTitle = 'كشف_قضايا
               ${c.status || '-'}
             </span>
           </td>
+          <td style="border: 1px solid #cbd5e1; padding: 8px; text-align: center; font-size: 10.5pt;">
+            ${c.rulingClassification ? `<span style="background-color: #f8fafc; color: #0f172a; border: 1px solid #cbd5e1; padding: 2px 6px; border-radius: 4px; font-weight: bold;">${c.rulingClassification}</span>` : '<span style="color: #94a3b8;">غير محدد</span>'}
+          </td>
           <td style="border: 1px solid #cbd5e1; padding: 8px; font-size: 10.5pt;">${c.lawyerInCharge || '-'}</td>
-          <td style="border: 1px solid #cbd5e1; padding: 8px; text-align: center; font-size: 11pt;">
-            ${c.nextHearingDate ? `<strong>${c.nextHearingDate}</strong><br><small style="color: #64748b;">${c.nextHearingTime || ''}</small>` : '<span style="color: #94a3b8;">غير محدد</span>'}
+          <td style="border: 1px solid #cbd5e1; padding: 8px; text-align: center; font-size: 10.5pt;">
+            ${c.nextHearingDate ? `
+              <strong>${c.nextHearingDate} م</strong><br>
+              <small style="color: #047857; font-weight: bold;">${gregorianToHijri(c.nextHearingDate)?.formattedText || ''}</small>
+              ${c.nextHearingTime ? `<br><small style="color: #64748b;">الساعة ${c.nextHearingTime}</small>` : ''}
+            ` : '<span style="color: #94a3b8;">غير محدد</span>'}
           </td>
           <td style="border: 1px solid #cbd5e1; padding: 8px; font-size: 10.5pt;">${c.hearingRequirement || '-'}</td>
           <td style="border: 1px solid #cbd5e1; padding: 8px; font-size: 10pt; text-align: center; color: #475569;">
@@ -225,6 +237,7 @@ export const exportToWord = (cases: CaseItem[], customTitle = 'كشف_قضايا
             <th>الخصم</th>
             <th>المحكمة والدائرة</th>
             <th>الحالة</th>
+            <th>تصنيف الحكم</th>
             <th>المحامي</th>
             <th>الجلسة القادمة</th>
             <th>المطلوب / أخر إجراء</th>
@@ -247,6 +260,152 @@ export const exportToWord = (cases: CaseItem[], customTitle = 'كشف_قضايا
             <small style="color: #64748b;">الختم الرسمي: .....................................</small>
           </td>
         </tr>
+      </table>
+
+      <div class="footer-note">
+        <span>مكتب كيان الإجادة للمحاماة والاستشارات القانونية - جميع البيانات سرية ومحمية نظاماً.</span>
+      </div>
+    </body>
+    </html>
+  `;
+
+  const blob = new Blob(['\ufeff', wordHtml], {
+    type: 'application/msword;charset=utf-8',
+  });
+
+  const url = URL.createObjectURL(blob);
+  const downloadLink = document.createElement('a');
+  downloadLink.href = url;
+  downloadLink.download = filename;
+  document.body.appendChild(downloadLink);
+  downloadLink.click();
+  document.body.removeChild(downloadLink);
+  URL.revokeObjectURL(url);
+};
+
+/**
+ * Export legal works table to an Excel file (.xlsx) with RTL orientation
+ */
+export const exportLegalWorksToExcel = (works: LegalWorkItem[], customTitle = 'الأعمال_القانونية_والتشغيلية_كيان_الإجادة') => {
+  const dateStr = new Date().toISOString().split('T')[0];
+  const filename = `${customTitle}_${dateStr}.xlsx`;
+
+  const data = works.map((w, index) => {
+    return {
+      'م': index + 1,
+      'رقم المعاملة / السند': w.workNumber || '-',
+      'نوع العمل القانوني': w.workType || '-',
+      'موضوع المعاملة والبيان': w.title || '-',
+      'العميل / المستفيد': w.clientName || '-',
+      'هاتف العميل': w.clientPhone || '-',
+      'الطرف الآخر / المدين': w.opponentName || '-',
+      'المبلغ / القيمة': w.amount ? formatMoney(w.amount) : 'غير محدد',
+      'الحالة': w.status || '-',
+      'الأولوية': w.priority || 'عادي',
+      'المحامي المسؤول': w.lawyerInCharge || '-',
+      'تاريخ الاستحقاق (ميلادي)': w.dueDate || 'غير محدد',
+      'تاريخ الاستحقاق (هجري)': w.dueDate ? (gregorianToHijri(w.dueDate)?.formattedText || '-') : (w.dueDateHijri || '-'),
+      'أخر إجراء وملاحظات': w.notes || '-',
+      'عدد المستندات المرفقة': Array.isArray(w.documents) ? w.documents.length : 0,
+      'المحامي المنشئ': w.createdByName || '-',
+      'تاريخ التسجيل': w.createdAt ? new Date(w.createdAt).toLocaleDateString('ar-SA') : '-',
+    };
+  });
+
+  const worksheet = XLSX.utils.json_to_sheet(data);
+  worksheet['!views'] = [{ RTL: true }];
+
+  worksheet['!cols'] = [
+    { wch: 5 },  // م
+    { wch: 18 }, // رقم المعاملة
+    { wch: 16 }, // نوع العمل
+    { wch: 35 }, // الموضوع
+    { wch: 25 }, // العميل
+    { wch: 16 }, // الهاتف
+    { wch: 25 }, // الطرف الآخر
+    { wch: 18 }, // المبلغ
+    { wch: 14 }, // الحالة
+    { wch: 12 }, // الأولوية
+    { wch: 20 }, // المحامي المسؤول
+    { wch: 18 }, // الاستحقاق ميلادي
+    { wch: 22 }, // الاستحقاق هجري
+    { wch: 35 }, // الملاحظات
+    { wch: 15 }, // المرفقات
+    { wch: 18 }, // المنشئ
+    { wch: 15 }, // التاريخ
+  ];
+
+  const workbook = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbook, worksheet, 'الأعمال والخدمات القانونية');
+  XLSX.writeFile(workbook, filename);
+};
+
+/**
+ * Export legal works to formatted Word document (.doc)
+ */
+export const exportLegalWorksToWord = (works: LegalWorkItem[], customTitle = 'تقرير_الأعمال_والخدمات_القانونية') => {
+  const dateStr = new Date().toISOString().split('T')[0];
+  const filename = `${customTitle}_${dateStr}.doc`;
+  const printDateArabic = new Date().toLocaleDateString('ar-SA', { dateStyle: 'full' });
+
+  const rowsHtml = works
+    .map(
+      (w, index) => `
+      <tr style="background-color: ${index % 2 === 0 ? '#ffffff' : '#f8fafc'};">
+        <td style="text-align: center; font-weight: bold; width: 4%;">${index + 1}</td>
+        <td style="font-family: monospace; font-weight: bold; color: #047857; text-align: center; width: 10%;">${w.workNumber || '-'}</td>
+        <td style="font-weight: bold; color: #064e3b; text-align: center; width: 11%;">${w.workType || '-'}</td>
+        <td style="font-weight: bold; width: 22%;">${w.title || '-'}</td>
+        <td style="width: 14%;">${w.clientName || '-'}</td>
+        <td style="width: 12%; color: #475569;">${w.opponentName || '—'}</td>
+        <td style="font-weight: bold; text-align: center; width: 11%; color: #0f766e;">${w.amount ? formatMoney(w.amount) : '—'}</td>
+        <td style="text-align: center; width: 8%; font-weight: bold;">${w.status || '-'}</td>
+        <td style="text-align: center; width: 8%;">${w.dueDate || '—'}</td>
+      </tr>
+    `
+    )
+    .join('');
+
+  const wordHtml = `
+    <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+    <head>
+      <meta charset='utf-8'>
+      <title>تقرير الأعمال القانونية - كيان الإجادة</title>
+      <style>
+        body { font-family: 'Cairo', Arial, sans-serif; direction: rtl; text-align: right; margin: 30px; font-size: 11pt; color: #1e293b; }
+        .header-box { text-align: center; border-bottom: 2px solid #065f46; padding-bottom: 12px; margin-bottom: 20px; }
+        .header-title { font-size: 18pt; font-weight: bold; color: #064e3b; margin: 0; }
+        .header-subtitle { font-size: 11pt; color: #047857; margin-top: 4px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 10pt; }
+        th { background-color: #065f46; color: #ffffff; padding: 10px 6px; border: 1px solid #047857; font-weight: bold; text-align: center; }
+        td { padding: 8px 6px; border: 1px solid #cbd5e1; vertical-align: middle; }
+        .footer-note { margin-top: 30px; border-top: 1px solid #cbd5e1; padding-top: 10px; font-size: 9pt; color: #64748b; text-align: center; }
+      </style>
+    </head>
+    <body>
+      <div class="header-box">
+        <h1 class="header-title">كيان الإجادة للمحاماة والاستشارات القانونية</h1>
+        <div class="header-subtitle">جدول المعاملات والأعمال والخدمات القانونية المعتمدة</div>
+        <p style="font-size: 10pt; color: #64748b; margin-top: 6px;">تاريخ استخراج التقرير: <strong>${printDateArabic}</strong> | إجمالي المعاملات: <strong>${works.length}</strong></p>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>م</th>
+            <th>رقم المعاملة</th>
+            <th>نوع العمل</th>
+            <th>موضوع العمل</th>
+            <th>المستفيد / الموكل</th>
+            <th>الطرف الآخر</th>
+            <th>المبلغ</th>
+            <th>الحالة</th>
+            <th>الاستحقاق</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${rowsHtml}
+        </tbody>
       </table>
 
       <div class="footer-note">

@@ -12,8 +12,17 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <script>
+      (function () {
+        try {
+          if (localStorage.getItem('kayan_theme') === 'dark') {
+            document.documentElement.classList.add('dark');
+          }
+        } catch (e) {}
+      })();
+    </script>
   </head>
-  <body class="bg-slate-50 text-slate-900 font-['Cairo',sans-serif] min-h-screen antialiased selection:bg-emerald-600/20 selection:text-emerald-950">
+  <body class="bg-[#F5F7FA] dark:bg-[#0E141C] text-[#0E141C] dark:text-[#F2EFE9] font-['Cairo',sans-serif] min-h-screen antialiased selection:bg-[#314B6E]/15 dark:selection:bg-[#BDB3A3]/30 selection:text-[#314B6E] dark:selection:text-[#F2EFE9]">
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
